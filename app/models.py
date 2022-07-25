@@ -8,18 +8,28 @@ from sqlalchemy import DateTime
 from sqlalchemy import Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy import MetaData
 from sqlalchemy import String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
+
+convention = {
+    'ix': 'ix_%(column_0_label)s',
+    'uq': 'uq_%(table_name)s_%(column_0_name)s',
+    'ck': 'ck_%(table_name)s_%(constraint_name)s',
+    'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
+    'pk': 'pk_%(table_name)s',
+}
+
+metadata = MetaData(naming_convention=convention)
+
+# declarative base class
+Base = declarative_base(metadata=metadata)
 
 
 class ConnectionType(enum.Enum):
     DISCORD = 'discord'
     TWITTER = 'twitter'
-
-
-# declarative base class
-Base = declarative_base()
 
 
 # User
@@ -61,8 +71,22 @@ class Owner(Base):
     # Relationships
     user = relationship('User', back_populates='owner')
 
+# Collection
+
+
+class Collection(Base):
+    __tablename__ = 'collection'
+
+    id = Column(Integer, primary_key=True, index=True)
+    policy_id = Column(String, nullable=False)
+    title = Column(String)
+
+    # Relationships
+    assets = relationship('Asset', back_populates='collection')
 
 # Asset
+
+
 class Asset(Base):
     __tablename__ = 'asset'
 
@@ -80,19 +104,6 @@ class Asset(Base):
     owner = relationship('Owner', back_populates='assets')
     collection = relationship('Collection', back_populates='assets')
     galleries = relationship('GalleryAsset', back_populates='asset')
-
-# Collection
-
-
-class Collection(Base):
-    __tablename__ = 'collection'
-
-    id = Column(Integer, primary_key=True, index=True)
-    policy_id = Column(String, nullable=False)
-    title = Column(String)
-
-    # Relationships
-    assets = relationship('Asset', back_populates='collection')
 
 
 # Gallery

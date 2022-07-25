@@ -1,5 +1,5 @@
 # Feel free to change base image
-FROM python:3.9.7-slim-buster
+FROM python:3.10.4-slim-buster
 
 WORKDIR /src
 
