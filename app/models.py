@@ -39,11 +39,12 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     pfp_asset_id = Column(Integer, ForeignKey('asset.id'))
     alias = Column(String)
+    datetime_created = Column(DateTime, default=datetime.datetime.now())
 
     # Relationships
     pfp = relationship('Asset', back_populates='user', uselist=False)
     social_connection = relationship('SocialConnection', back_populates='user')
-    owner = relationship('Owner', back_populates='user')
+    wallet = relationship('Wallet', back_populates='user')
     galleries = relationship('Gallery', back_populates='user')
 
 
@@ -59,9 +60,9 @@ class SocialConnection(Base):
     user = relationship('User', back_populates='social_connections')
 
 
-# Owner/Wallet
-class Owner(Base):
-    __tablename__ = 'owner'
+# Wallet
+class Wallet(Base):
+    __tablename__ = 'wallet'
 
     id = Column(Integer, primary_key=True, index=True)
     address = Column(String)
@@ -69,7 +70,8 @@ class Owner(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
 
     # Relationships
-    user = relationship('User', back_populates='owner')
+    user = relationship('User', back_populates='wallet')
+    asset_txs = relationship('AssetTx', back_populates='wallet')
 
 # Collection
 
@@ -95,18 +97,51 @@ class Asset(Base):
     hash = Column(String)
     name = Column(String)
     fingerprint = Column(String)
-    # latest_mint_tx_id = Column(Integer, ForeignKey("asset_tx.id"))
-    # latest_tx_id = Column(Integer, ForeignKey("asset_tx.id"))
-    current_owner_id = Column(Integer, ForeignKey('owner.id'))
+    latest_mint_tx_id = Column(Integer, ForeignKey('asset_mint_tx.id'))
+    latest_tx_id = Column(Integer, ForeignKey('asset_tx.id'))
+    current_wallet_id = Column(Integer, ForeignKey('wallet.id'))
 
     # Relationships
     user = relationship('User', back_populates='pfp_asset')
-    owner = relationship('Owner', back_populates='assets')
+    wallet = relationship('Wallet', back_populates='assets')
     collection = relationship('Collection', back_populates='assets')
     galleries = relationship('GalleryAsset', back_populates='asset')
+    asset_txs = relationship('AssetTx', back_populates='asset')
+    asset_mint_txs = relationship('AssetTx', back_populates='asset')
 
+# Txs
+
+
+class AssetTx(Base):
+    __tablename__ = 'asset_tx'
+
+    id = Column(Integer, primary_key=True, index=True)
+    quantity = Column(Integer)
+    tx_hash = Column(String)
+    tx_time = Column(DateTime)
+    asset_id = Column(Integer, ForeignKey('asset.id'))
+    wallet_id = Column(Integer, ForeignKey('wallet.id'))
+
+    # Relationships
+    asset = relationship('Asset', back_populates='asset_txs')
+    wallet = relationship('Wallet', back_populates='asset_txs')
+
+
+class AssetMintTx(Base):
+    __tablename__ = 'asset_mint_tx'
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    asset_id = Column(Integer, ForeignKey('asset.id'))
+    wallet_id = Column(Integer, ForeignKey('wallet.id'))
+
+    # Relationships
+    asset = relationship('Asset', back_populates='asset_mint_txs')
+    wallet = relationship('Wallet', back_populates='asset_mint_txs')
 
 # Gallery
+
+
 class Gallery(Base):
     __tablename__ = 'gallery'
 
