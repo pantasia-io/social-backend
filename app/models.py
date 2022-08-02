@@ -10,6 +10,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import MetaData
 from sqlalchemy import String
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -131,6 +132,12 @@ class AssetMintTx(Base):
     __tablename__ = 'asset_mint_tx'
 
     id = Column(Integer, primary_key=True, index=True)
+    quantity = Column(Integer)
+    tx_hash = Column(String)
+    tx_time = Column(DateTime)
+    image = Column(String)
+    metadata_ = Column(JSONB, name='metadata')
+    files = Column(JSONB)
 
     asset_id = Column(Integer, ForeignKey('asset.id'))
     wallet_id = Column(Integer, ForeignKey('wallet.id'))
