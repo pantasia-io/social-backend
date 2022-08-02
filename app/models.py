@@ -9,6 +9,7 @@ from sqlalchemy import Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import MetaData
+from sqlalchemy import Numeric
 from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base
@@ -117,7 +118,7 @@ class AssetTx(Base):
     __tablename__ = 'asset_tx'
 
     id = Column(Integer, primary_key=True, index=True)
-    quantity = Column(Integer)
+    quantity = Column(Numeric(20, 0))
     tx_hash = Column(String)
     tx_time = Column(DateTime)
     asset_id = Column(Integer, ForeignKey('asset.id'))
@@ -132,7 +133,7 @@ class AssetMintTx(Base):
     __tablename__ = 'asset_mint_tx'
 
     id = Column(Integer, primary_key=True, index=True)
-    quantity = Column(Integer)
+    quantity = Column(Numeric(20, 0))
     tx_hash = Column(String)
     tx_time = Column(DateTime)
     image = Column(String)
