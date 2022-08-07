@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
+from app.common.router import router as common_router
+
 app = FastAPI()
 
-
-@app.get('/')
-def hello_world():
-    return {'Hello': 'World'}
+app.include_router(common_router, prefix='', tags=['Core'])
