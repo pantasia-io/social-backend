@@ -12,12 +12,14 @@ uvicorn = {extras = ["standard"], version = "^0.18.2"}
 alembic = "^1.8.1"
 SQLAlchemy = "^1.4.39"
 psycopg2-binary = "^2.9.3"
+aiohttp = "^3.8.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 black = "^21.12b0"
 flake8 = "^4.0.1"
 pre-commit = "^2.19.0"
+pytest-aiohttp = "^1.0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
