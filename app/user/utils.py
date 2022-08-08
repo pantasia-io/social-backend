@@ -27,7 +27,9 @@ async def validate_user(
     user. Returns a User object
     """
     if bearer is not None:
-        discord_user_data = get_auth_info(bearer)
+        discord_user_data = await get_auth_info(
+            access_token=bearer.credentials,
+        )
         return get_or_create_user_discord(discord_user_data)
 
     raise HTTPException(
@@ -35,10 +37,10 @@ async def validate_user(
     )
 
 
-async def get_auth_info(bearer: str) -> DiscordData | ValidationError:
+async def get_auth_info(access_token: str) -> DiscordData | ValidationError:
     response = await async_client.session.get(
         'https://discord.com/api/v10/oauth2/@me',
-        headers={'Authorization': f'Bearer {bearer}'},
+        headers={'Authorization': f'Bearer {access_token}'},
     )
     data = await response.json()
     return DiscordData(**data)

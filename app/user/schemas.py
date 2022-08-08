@@ -12,7 +12,7 @@ class DiscordData(BaseModel):
     user: DiscordUserData
 
 
-class User(BaseModel):
+class User(DiscordData):
     """
     Pantasia User
     """

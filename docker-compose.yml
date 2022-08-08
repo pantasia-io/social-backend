@@ -48,8 +48,8 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --reload
     networks:
       - backend
-    # stdin_open: true # Add this line into your service
-    # tty: true
+    stdin_open: true # Add this line into your service
+    tty: true
 
 networks:
   postgres:
