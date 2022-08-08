@@ -23,3 +23,6 @@ class HttpClient:
     def __call__(self) -> aiohttp.ClientSession:
         assert self.session is not None
         return self.session
+
+
+async_client = HttpClient()
