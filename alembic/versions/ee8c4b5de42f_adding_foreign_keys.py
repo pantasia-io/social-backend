@@ -1,8 +1,8 @@
 """Adding Foreign Keys
 
-Revision ID: 8a5e8dc384b4
-Revises: 31713977832b
-Create Date: 2022-07-29 14:34:28.590453
+Revision ID: ee8c4b5de42f
+Revises: d0e064a71ea6
+Create Date: 2022-08-13 03:18:27.245822
 
 """
 from __future__ import annotations
@@ -13,8 +13,8 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision = '8a5e8dc384b4'
-down_revision = '31713977832b'
+revision = 'ee8c4b5de42f'
+down_revision = 'd0e064a71ea6'
 branch_labels = None
 depends_on = None
 
@@ -42,12 +42,31 @@ def upgrade() -> None:
     op.add_column('asset', sa.Column('collection_id', sa.Integer(), nullable=True))
     op.add_column('asset', sa.Column('current_wallet_id', sa.Integer(), nullable=True))
     op.create_foreign_key(
+        op.f('fk_asset_current_wallet_id_wallet'),
+        'asset', 'wallet', ['current_wallet_id'], ['id'],
+    )
+    op.create_foreign_key(
         op.f('fk_asset_collection_id_collection'),
         'asset', 'collection', ['collection_id'], ['id'],
     )
+    op.add_column('asset_ext', sa.Column('asset_id', sa.Integer(), nullable=True))
+    op.add_column(
+        'asset_ext', sa.Column(
+            'latest_mint_tx_id', sa.Integer(), nullable=True,
+        ),
+    )
+    op.add_column('asset_ext', sa.Column('latest_tx_id', sa.Integer(), nullable=True))
     op.create_foreign_key(
-        op.f('fk_asset_current_wallet_id_wallet'),
-        'asset', 'wallet', ['current_wallet_id'], ['id'],
+        op.f('fk_asset_ext_latest_tx_id_asset_tx'),
+        'asset_ext', 'asset_tx', ['latest_tx_id'], ['id'],
+    )
+    op.create_foreign_key(
+        op.f('fk_asset_ext_latest_mint_tx_id_asset_mint_tx'),
+        'asset_ext', 'asset_mint_tx', ['latest_mint_tx_id'], ['id'],
+    )
+    op.create_foreign_key(
+        op.f('fk_asset_ext_asset_id_asset'),
+        'asset_ext', 'asset', ['asset_id'], ['id'],
     )
     op.add_column('asset_mint_tx', sa.Column('asset_id', sa.Integer(), nullable=True))
     op.add_column('asset_mint_tx', sa.Column('wallet_id', sa.Integer(), nullable=True))
@@ -116,11 +135,26 @@ def downgrade() -> None:
     op.drop_column('asset_mint_tx', 'wallet_id')
     op.drop_column('asset_mint_tx', 'asset_id')
     op.drop_constraint(
-        op.f('fk_asset_current_wallet_id_wallet'),
+        op.f('fk_asset_ext_asset_id_asset'),
+        'asset_ext', type_='foreignkey',
+    )
+    op.drop_constraint(
+        op.f('fk_asset_ext_latest_mint_tx_id_asset_mint_tx'),
+        'asset_ext', type_='foreignkey',
+    )
+    op.drop_constraint(
+        op.f('fk_asset_ext_latest_tx_id_asset_tx'),
+        'asset_ext', type_='foreignkey',
+    )
+    op.drop_column('asset_ext', 'latest_tx_id')
+    op.drop_column('asset_ext', 'latest_mint_tx_id')
+    op.drop_column('asset_ext', 'asset_id')
+    op.drop_constraint(
+        op.f('fk_asset_collection_id_collection'),
         'asset', type_='foreignkey',
     )
     op.drop_constraint(
-        op.f('fk_asset_collection_id_collection'),
+        op.f('fk_asset_current_wallet_id_wallet'),
         'asset', type_='foreignkey',
     )
     op.drop_column('asset', 'current_wallet_id')

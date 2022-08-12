@@ -1,19 +1,19 @@
 """Initial Tables
 
-Revision ID: 31713977832b
+Revision ID: d0e064a71ea6
 Revises:
-Create Date: 2022-07-29 14:33:09.026098
+Create Date: 2022-08-13 03:17:19.413808
 
 """
 from __future__ import annotations
 
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 from alembic import op
 
-
 # revision identifiers, used by Alembic.
-revision = '31713977832b'
+revision = 'd0e064a71ea6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,15 +31,27 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_asset_id'), 'asset', ['id'], unique=False)
     op.create_table(
+        'asset_ext',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.PrimaryKeyConstraint('id', name=op.f('pk_asset_ext')),
+    )
+    op.create_index(op.f('ix_asset_ext_id'), 'asset_ext', ['id'], unique=False)
+    op.create_table(
         'asset_mint_tx',
         sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('quantity', sa.Numeric(precision=20, scale=0), nullable=True),
+        sa.Column('tx_hash', sa.String(), nullable=True),
+        sa.Column('tx_time', sa.DateTime(), nullable=True),
+        sa.Column('image', sa.String(), nullable=True),
+        sa.Column('metadata', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column('files', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_asset_mint_tx')),
     )
     op.create_index(op.f('ix_asset_mint_tx_id'), 'asset_mint_tx', ['id'], unique=False)
     op.create_table(
         'asset_tx',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('quantity', sa.Integer(), nullable=True),
+        sa.Column('quantity', sa.Numeric(precision=20, scale=0), nullable=True),
         sa.Column('tx_hash', sa.String(), nullable=True),
         sa.Column('tx_time', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_asset_tx')),
@@ -107,6 +119,8 @@ def downgrade() -> None:
     op.drop_table('asset_tx')
     op.drop_index(op.f('ix_asset_mint_tx_id'), table_name='asset_mint_tx')
     op.drop_table('asset_mint_tx')
+    op.drop_index(op.f('ix_asset_ext_id'), table_name='asset_ext')
+    op.drop_table('asset_ext')
     op.drop_index(op.f('ix_asset_id'), table_name='asset')
     op.drop_table('asset')
     # ### end Alembic commands ###
