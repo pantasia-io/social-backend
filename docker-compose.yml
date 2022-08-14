@@ -30,6 +30,8 @@ services:
   #   restart: unless-stopped
 
   fastapi:
+    env_file:
+      - .env
     depends_on:
       - postgres
     restart: always
