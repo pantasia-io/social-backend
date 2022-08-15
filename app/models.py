@@ -99,8 +99,7 @@ class Asset(Base):
     hash = Column(String)
     name = Column(String)
     fingerprint = Column(String)
-    latest_mint_tx_id = Column(Integer, ForeignKey('asset_mint_tx.id'))
-    latest_tx_id = Column(Integer, ForeignKey('asset_tx.id'))
+
     current_wallet_id = Column(Integer, ForeignKey('wallet.id'))
 
     # Relationships
@@ -108,8 +107,22 @@ class Asset(Base):
     wallet = relationship('Wallet', back_populates='assets')
     collection = relationship('Collection', back_populates='assets')
     galleries = relationship('GalleryAsset', back_populates='asset')
-    asset_txs = relationship('AssetTx', back_populates='asset')
-    asset_mint_txs = relationship('AssetTx', back_populates='asset')
+    asset_ext = relationship('AssetExt', back_populates='asset')
+
+
+class AssetExt(Base):
+    __tablename__ = 'asset_ext'
+
+    id = Column(Integer, primary_key=True, index=True)
+    asset_id = Column(Integer, ForeignKey('asset.id'))
+    latest_mint_tx_id = Column(Integer, ForeignKey('asset_mint_tx.id'))
+    latest_tx_id = Column(Integer, ForeignKey('asset_tx.id'))
+
+    # Relationships
+    asset = relationship('Asset', back_populates='asset_ext')
+    asset_latest_txs = relationship('AssetTx', back_populates='asset_ext')
+    asset_latest_mint_txs = relationship('AssetMintTx', back_populates='asset_ext')
+
 
 # Txs
 
@@ -127,6 +140,7 @@ class AssetTx(Base):
     # Relationships
     asset = relationship('Asset', back_populates='asset_txs')
     wallet = relationship('Wallet', back_populates='asset_txs')
+    asset_ext = relationship('AssetExt', back_populates='asset_latest_txs')
 
 
 class AssetMintTx(Base):
@@ -146,6 +160,7 @@ class AssetMintTx(Base):
     # Relationships
     asset = relationship('Asset', back_populates='asset_mint_txs')
     wallet = relationship('Wallet', back_populates='asset_mint_txs')
+    asset_ext = relationship('AssetExt', back_populates='asset_latest_mint_txs')
 
 # Gallery
 
