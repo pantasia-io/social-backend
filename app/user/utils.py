@@ -4,7 +4,6 @@ from fastapi import HTTPException
 from fastapi import Security
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.security import HTTPBearer
-from pydantic import ValidationError
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from app.core.aio.client import async_client
@@ -39,11 +38,13 @@ async def validate_user(
     )
 
 
-async def get_auth_info(access_token: str) -> DiscordData | ValidationError:
+async def get_auth_info(access_token: str) -> DiscordData:
     response = await async_client.session.get(
         f'{settings.discord_api_endpoint}/oauth2/@me',
         headers={'Authorization': f'Bearer {access_token}'},
     )
+    response.raise_for_status()
+
     data = await response.json()
     return DiscordData(**data)
 
