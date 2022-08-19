@@ -45,7 +45,7 @@ class User(Base):
 
     # Relationships
     pfp = relationship('Asset', back_populates='user', uselist=False)
-    social_connection = relationship('SocialConnection', back_populates='user')
+    social_connections = relationship('SocialConnection', back_populates='user')
     wallet = relationship('Wallet', back_populates='user')
     galleries = relationship('Gallery', back_populates='user')
 
@@ -54,7 +54,7 @@ class SocialConnection(Base):
     __tablename__ = 'connection'
 
     id = Column(Integer, primary_key=True, index=True)
-    user = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
     connection_id = Column(String)
     connection_type = Column(Enum(ConnectionType))
 
@@ -73,7 +73,9 @@ class Wallet(Base):
 
     # Relationships
     user = relationship('User', back_populates='wallet')
+    assets = relationship('Asset', back_populates='wallet')
     asset_txs = relationship('AssetTx', back_populates='wallet')
+    asset_mint_txs = relationship('AssetMintTx', back_populates='wallet')
 
 # Collection
 
@@ -103,10 +105,12 @@ class Asset(Base):
     current_wallet_id = Column(Integer, ForeignKey('wallet.id'))
 
     # Relationships
-    user = relationship('User', back_populates='pfp_asset')
+    user = relationship('User', back_populates='pfp')
     wallet = relationship('Wallet', back_populates='assets')
     collection = relationship('Collection', back_populates='assets')
     galleries = relationship('GalleryAsset', back_populates='asset')
+    asset_txs = relationship('AssetTx', back_populates='asset')
+    asset_mint_txs = relationship('AssetMintTx', back_populates='asset')
     asset_ext = relationship('AssetExt', back_populates='asset')
 
 
