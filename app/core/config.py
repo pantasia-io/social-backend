@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from pydantic import BaseSettings
+from pydantic import PostgresDsn
+from pydantic import validator
 
 
 class Settings(BaseSettings):
@@ -10,20 +13,40 @@ class Settings(BaseSettings):
     # General
     ###################
     # loggings
-    log_level: str = 'INFO'
+    LOG_LEVEL: str = 'INFO'
 
     ###################
     # AIO Http Client
     ###################
-    aiohttp_client_session_timeout_sec: int = 5
+    AIO_HTTP_CLIENT_TIMEOUT_SEC: int = 5
 
     ###################
     # Discord
     ###################
-    discord_api_endpoint: str = 'https://discord.com/api/v10'
-    discord_redirect_url: str = 'https://www.google.com/'
-    discord_client_id: str = '1005891636905123973'
-    discord_client_secret: str
+    DISCORD_API_ENDPOINT: str = 'https://discord.com/api/v10'
+    DISCORD_REDIRECT_URL: str = 'https://www.google.com/'
+    DISCORD_CLIENT_ID: str = '1005891636905123973'
+    DISCORD_CLIENT_SECRET: str
+
+    POSTGRES_SERVER: str = 'localhost'
+    POSTGRES_PORT: str = '5432'
+    POSTGRES_USER: str = 'postgres'
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str = 'postgres'
+    DATABASE_URI: PostgresDsn | None = None
+
+    @validator('DATABASE_URI', pre=True)
+    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme='postgresql+asyncpg',
+            user=values.get('POSTGRES_USER'),
+            password=values.get('POSTGRES_PASSWORD'),
+            host=values.get('POSTGRES_SERVER'),
+            port=values.get('POSTGRES_PORT'),
+            path=f"/{values.get('POSTGRES_DB') or ''}",
+        )
 
 
 settings = Settings()
@@ -32,4 +55,4 @@ settings = Settings()
 # Logging
 ###
 logger = logging.getLogger('gunicorn.error')
-logger.setLevel(settings.log_level)
+logger.setLevel(settings.LOG_LEVEL)

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import datetime
+
 from pydantic import BaseModel
 
 
@@ -12,11 +14,16 @@ class DiscordData(BaseModel):
     user: DiscordUserData
 
 
-class User(DiscordData):
+class User(BaseModel):
     """
     Pantasia User
     """
-    pass
+    id: int
+    alias: str
+    datetime_created: datetime.datetime
+
+    class Config:
+        orm_mode = True
 
 
 class AccessTokenResponse(BaseModel):

@@ -12,7 +12,7 @@ class HttpClient:
         self.session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(force_close=True),
             timeout=aiohttp.ClientTimeout(
-                total=settings.aiohttp_client_session_timeout_sec,
+                total=settings.AIO_HTTP_CLIENT_TIMEOUT_SEC,
             ),
         )
 
