@@ -44,6 +44,7 @@ async def validate_user(
 
 async def get_auth_info(access_token: str) -> DiscordData:
     """
+    Get the user information from discord based on access token
     https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information
     """
     response = await async_client.session.get(
@@ -57,6 +58,10 @@ async def get_auth_info(access_token: str) -> DiscordData:
 
 
 async def exchange_code_for_access_token(code: str) -> AccessTokenResponse:
+    """
+    Exchange discord code granted from authorization with access token
+    https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-access-token-exchange-example
+    """
     payload = {
         'client_id': settings.DISCORD_CLIENT_ID,
         'client_secret': settings.DISCORD_CLIENT_SECRET,
@@ -81,6 +86,10 @@ async def exchange_code_for_access_token(code: str) -> AccessTokenResponse:
 
 
 async def refresh_access_token(refresh_token: str) -> AccessTokenResponse:
+    """
+    Getting a new set of access token with refresh token
+    https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-access-token-exchange-example
+    """
     payload = {
         'client_id': settings.DISCORD_CLIENT_ID,
         'client_secret': settings.DISCORD_CLIENT_SECRET,
