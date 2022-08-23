@@ -39,7 +39,11 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True, index=True)
-    pfp_asset_id = Column(Integer, ForeignKey('asset.id'))
+    pfp_asset_id = Column(
+        Integer, ForeignKey(
+            'asset.id', use_alter=True,
+        ), nullable=True,
+    )
     alias = Column(String)
     datetime_created = Column(DateTime, default=datetime.datetime.now())
 
@@ -54,7 +58,7 @@ class SocialConnection(Base):
     __tablename__ = 'connection'
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     connection_id = Column(String)
     connection_type = Column(Enum(ConnectionType))
 

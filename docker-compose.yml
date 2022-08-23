@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - "${POSTGRES_PORT:-5433}:5432"
+      - "${POSTGRES_PORT_LOCAL:-5433}:5432"
     networks:
       - postgres
       - backend
@@ -30,6 +30,8 @@ services:
   #   restart: unless-stopped
 
   fastapi:
+    env_file:
+      - .env
     depends_on:
       - postgres
     restart: always
@@ -48,8 +50,8 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --reload
     networks:
       - backend
-    # stdin_open: true # Add this line into your service
-    # tty: true
+    stdin_open: true # Add this line into your service
+    tty: true
 
 networks:
   postgres:
