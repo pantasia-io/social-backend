@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     DISCORD_CLIENT_ID: str = '1005891636905123973'
     DISCORD_CLIENT_SECRET: str
 
+    ###################
+    # Postgres
+    ###################
     POSTGRES_SERVER: str = 'localhost'
     POSTGRES_PORT: str = '5432'
     POSTGRES_USER: str = 'postgres'

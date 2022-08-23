@@ -43,6 +43,9 @@ async def validate_user(
 
 
 async def get_auth_info(access_token: str) -> DiscordData:
+    """
+    https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information
+    """
     response = await async_client.session.get(
         f'{settings.DISCORD_API_ENDPOINT}/oauth2/@me',
         headers={'Authorization': f'Bearer {access_token}'},
