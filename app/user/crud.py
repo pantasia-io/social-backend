@@ -8,10 +8,14 @@ from app.models import ConnectionType
 from app.models import SocialConnection
 from app.models import User
 from app.user.schemas import DiscordData
-from app.user.schemas import User as UserSchema
 
 
-async def get_or_create_user_discord(db: AsyncSession, data: DiscordData) -> UserSchema:
+async def get_or_create_user_discord(db: AsyncSession, data: DiscordData) -> User:
+    """
+    Get Pantasia User based on Discord Data.
+    If user is not present,
+    create a new user and social connection and link them together
+    """
     # Read by connection id
     connection = await get_discord_connection_by_id(
         db=db, connection_id=data.user.id,
