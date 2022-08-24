@@ -40,9 +40,9 @@ services:
       dockerfile: Dockerfile
     environment:
       POSTGRES_SERVER: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+    #   POSTGRES_USER: postgres
+    #   POSTGRES_PASSWORD: password
+    #   POSTGRES_DB: postgres
     ports:
       - "8000:8000"
     volumes:
