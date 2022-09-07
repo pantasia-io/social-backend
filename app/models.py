@@ -71,7 +71,7 @@ class Wallet(Base):
     __tablename__ = 'wallet'
 
     id = Column(Integer, primary_key=True, index=True)
-    address = Column(String)
+    address = Column(String, index=True)
     address_type = Column(String)
     user_id = Column(Integer, ForeignKey('user.id'))
 
@@ -88,7 +88,7 @@ class Collection(Base):
     __tablename__ = 'collection'
 
     id = Column(Integer, primary_key=True, index=True)
-    policy_id = Column(String, nullable=False)
+    policy_id = Column(String, index=True, nullable=False)
     title = Column(String)
 
     # Relationships
@@ -104,7 +104,7 @@ class Asset(Base):
     collection_id = Column(Integer, ForeignKey('collection.id'))
     hash = Column(String)
     name = Column(String)
-    fingerprint = Column(String)
+    fingerprint = Column(String, index=True)
 
     current_wallet_id = Column(Integer, ForeignKey('wallet.id'))
 
@@ -122,7 +122,7 @@ class AssetExt(Base):
     __tablename__ = 'asset_ext'
 
     id = Column(Integer, primary_key=True, index=True)
-    asset_id = Column(Integer, ForeignKey('asset.id'))
+    asset_id = Column(Integer, ForeignKey('asset.id'), index=True)
     latest_mint_tx_id = Column(Integer, ForeignKey('asset_mint_tx.id'))
     latest_tx_id = Column(Integer, ForeignKey('asset_tx.id'))
 
