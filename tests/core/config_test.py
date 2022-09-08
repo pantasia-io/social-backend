@@ -6,13 +6,13 @@ from app.core.config import Settings
 
 
 def test_uri_validator():
-    db_uri = 'postgresql://user:pw@host/db'  # pragma: allowlist secret
+    db_uri = 'postgresql+asyncpg://user:pw@host/db'  # pragma: allowlist secret
     settings = Settings(DATABASE_URI=db_uri)
     assert settings.DATABASE_URI == db_uri
 
 
 def test_pg_dsn():
-    db_uri = 'postgresql://user:pw@host:5432/db'  # pragma: allowlist secret
+    db_uri = 'postgresql+asyncpg://user:pw@host:5432/db'  # pragma: allowlist secret
     settings = Settings(
         POSTGRES_SERVER='host',
         POSTGRES_USER='user',
