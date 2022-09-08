@@ -11,10 +11,10 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 from app.core.aio.client import async_client
 from app.core.config import settings
 from app.core.db import get_session
+from app.models import User
 from app.user.crud import get_or_create_user_discord
 from app.user.schemas import AccessTokenResponse
 from app.user.schemas import DiscordData
-from app.user.schemas import User
 
 bearer = HTTPBearer(auto_error=False)
 
