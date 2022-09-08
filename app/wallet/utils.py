@@ -12,10 +12,6 @@ def get_address_from_cbor(cbor_string: str) -> Address:
 
 
 def get_staking_address(address: Address) -> str | None:
-    # Check if address is from Shelley Era
-    if not address.encode().startswith('addr'):
-        return None
-
     # Check if address has staking part
     if not isinstance(address.staking_part, VerificationKeyHash):
         return None
