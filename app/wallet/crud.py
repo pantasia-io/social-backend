@@ -48,3 +48,19 @@ async def update_wallet_user(
     wallet.user = user
     await db.flush()
     return wallet
+
+
+async def get_user_connected_wallets(
+    user: User,
+    db: AsyncSession,
+    limit: int = 20,
+    offset: int = 0,
+) -> list(Wallet):
+    stmt = (
+        select(Wallet)
+        .where(Wallet.user == user)
+        .limit(limit)
+        .offset(offset)
+    )
+    wallets = (await db.scalars(stmt)).all()
+    return wallets
